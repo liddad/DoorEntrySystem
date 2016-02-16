@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class SQLParser {
@@ -53,7 +55,7 @@ public class SQLParser {
 				course, department, department2, type);
 	}
 	
-	public Criteria getCriteria(String room) throws SQLException{
+	public List<Criteria> getCriteria(String room) throws SQLException{
 		String roomName;
 		String firstNames;
 		String surname;
@@ -63,23 +65,27 @@ public class SQLParser {
 		String course;
 		String department;
 		String type;
+		ArrayList<Criteria> list = new ArrayList<Criteria>();
 		
 		String statement = "SELECT * FROM criteria WHERE RoomName=" + room;
 		Statement s = conn.createStatement();
 		ResultSet result = s.executeQuery(statement);
 		
-		roomName = result.getString("RoomName");
-		firstNames = result.getString("FNames");
-		surname = result.getString("Surname");
-		startYear = Integer.parseInt(result.getString("StartYear"));
-		endYear = Integer.parseInt(result.getString("EndYear"));
-		faculty =result.getString("Faculty");
-		course = result.getString("Course");
-		department = result.getString("Department");
-		type = result.getString("PType");
+		do{
+			roomName = result.getString("RoomName");
+			firstNames = result.getString("FNames");
+			surname = result.getString("Surname");
+			startYear = Integer.parseInt(result.getString("StartYear"));
+			endYear = Integer.parseInt(result.getString("EndYear"));
+			faculty =result.getString("Faculty");
+			course = result.getString("Course");
+			department = result.getString("Department");
+			type = result.getString("PType");
 		
-		return new Criteria(roomName, firstNames, surname, startYear, endYear, faculty,
-				course, department, type);
+			list.add(new Criteria(roomName, firstNames, surname, startYear, endYear, faculty,
+				course, department, type));
+		}while(result.next());
+		return list;
 	}
 	
 }
