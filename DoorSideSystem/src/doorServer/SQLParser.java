@@ -1,5 +1,6 @@
 package doorServer;
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,17 +10,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+
+
 public class SQLParser {
 
 	private Connection conn;
 	
-	public SQLParser() throws SQLException{
+	public SQLParser(){
+		try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		Connection c = null;
 		String serverName= "localhost";
 		int port = 3306;
 		Properties cp = new Properties();
 		cp.put("user", "piServer");
 		cp.put("password", "piServer1234");
-		conn = DriverManager.getConnection("jdbc: mysql://" + serverName + ":" + port + "/", cp);
+		try {
+			c = DriverManager.getConnection("jdbc:mysql://" + serverName + ":" + port + "/doorsystem", cp);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conn = c;
 	}
 	
 	public Person getPerson(int ID) throws SQLException{
@@ -39,11 +54,12 @@ public class SQLParser {
 		Statement s = conn.createStatement();
 		ResultSet result = s.executeQuery(statement);
 		
-		UUID = Integer.parseInt(result.getString("UUID"));
+		if(result.next()){
+		UUID = result.getInt("UUID");
 		firstNames = result.getString("FNames");
 		surname = result.getString("Surname");
-		startYear = Integer.parseInt(result.getString("StartYear"));
-		endYear = Integer.parseInt(result.getString("EndYear"));
+		startYear = result.getInt("StartYear");
+		endYear = result.getInt("EndYear");
 		faculty =result.getString("Faculty");
 		faculty2 = result.getString("Faculty2");
 		course = result.getString("Course");
@@ -53,6 +69,8 @@ public class SQLParser {
 		
 		return new Person(UUID, firstNames, surname, startYear, endYear, faculty, faculty2, 
 				course, department, department2, type);
+		}
+		return null;
 	}
 	
 	public List<Criteria> getCriteria(String room) throws SQLException{
@@ -67,16 +85,16 @@ public class SQLParser {
 		String type;
 		ArrayList<Criteria> list = new ArrayList<Criteria>();
 		
-		String statement = "SELECT * FROM criteria WHERE RoomName=" + room;
+		String statement = "SELECT * FROM criteria WHERE RoomName=\"" + room + "\"";
 		Statement s = conn.createStatement();
 		ResultSet result = s.executeQuery(statement);
 		
-		do{
+		while(result.next()){
 			roomName = result.getString("RoomName");
-			firstNames = result.getString("FNames");
+			firstNames = result.getString("FName");
 			surname = result.getString("Surname");
-			startYear = Integer.parseInt(result.getString("StartYear"));
-			endYear = Integer.parseInt(result.getString("EndYear"));
+			startYear = result.getInt("StartDate");
+			endYear = result.getInt("EndDate");
 			faculty =result.getString("Faculty");
 			course = result.getString("Course");
 			department = result.getString("Department");
@@ -84,7 +102,7 @@ public class SQLParser {
 		
 			list.add(new Criteria(roomName, firstNames, surname, startYear, endYear, faculty,
 				course, department, type));
-		}while(result.next());
+		}
 		return list;
 	}
 	

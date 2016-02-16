@@ -1,5 +1,6 @@
 package doorServer;
 
+
 public class Person {
 
 	private int UUID;
@@ -30,94 +31,33 @@ public class Person {
 		this.department2 = department2;
 		this.type = type;
 	}
-
-	public int getUUID() {
-		return UUID;
-	}
-
-	public void setUUID(int uUID) {
-		UUID = uUID;
-	}
-
-	public String getFirstNames() {
-		return firstNames;
-	}
-
-	public void setFirstNames(String firstNames) {
-		this.firstNames = firstNames;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public int getStartYear() {
-		return startYear;
-	}
-
-	public void setStartYear(int startYear) {
-		this.startYear = startYear;
-	}
-
-	public int getEndYear() {
-		return endYear;
-	}
-
-	public void setEndYear(int endYear) {
-		this.endYear = endYear;
-	}
-
-	public String getFaculty() {
-		return faculty;
-	}
-
-	public void setFaculty(String faculty) {
-		this.faculty = faculty;
-	}
-
-	public String getFaculty2() {
-		return faculty2;
-	}
-
-	public void setFaculty2(String faculty2) {
-		this.faculty2 = faculty2;
-	}
-
-	public String getCourse() {
-		return course;
-	}
-
-	public void setCourse(String course) {
-		this.course = course;
-	}
-
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
-	}
-
-	public String getDepartment2() {
-		return department2;
-	}
-
-	public void setDepartment2(String department2) {
-		this.department2 = department2;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 	
+	public boolean fitsCriteria(Criteria c){
+		if(c.getFirstNames()!=null&&!firstNames.equals(c.getFirstNames())){
+			return false;
+		}
+		if(c.getSurname()!=null&&!surname.equals(c.getSurname())){
+			return false;
+		}
+		if(c.getStartYear()>=1950){
+			return false;
+		}
+		if(c.getEndYear()>=1950){
+			return false;
+		}
+		if(c.getFaculty()!=null&&!faculty.equals(c.getFaculty())&&(faculty2==null||!faculty2.equals(c.getFaculty()))){
+			return false;
+		}
+		if(c.getCourse()!=null&&!course.equals(c.getCourse())){
+			return false;
+		}
+		if(c.getDepartment()!=null&&!department.equals(c.getDepartment())&&(department2==null||!department2.equals(c.getDepartment()))){
+			return false;
+		}
+		if(c.getType()!=null&&!type.equals(c.getType())){
+			return false;
+		}
+		return true;
+	}
 	
 }

@@ -1,11 +1,26 @@
 package doorServer;
 
-public class ConnectionListener implements Runnable {
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-
+public class ConnectionListener {
+	
+	public static void main(String args[]) {
+		try {
+			ServerSocket sock = new ServerSocket(6100);
+			Socket s;
+			while(true){
+				s = sock.accept();
+				Thread t = new Thread(new RequestListener(s));
+				t.start();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }
