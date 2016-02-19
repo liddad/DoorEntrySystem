@@ -77,8 +77,8 @@ public class SQLParser {
 		String roomName;
 		String firstNames;
 		String surname;
-		int startYear;
-		int endYear;
+		int year;
+		int maxYear, minYear;
 		String faculty;
 		String course;
 		String department;
@@ -93,14 +93,15 @@ public class SQLParser {
 			roomName = result.getString("RoomName");
 			firstNames = result.getString("FName");
 			surname = result.getString("Surname");
-			startYear = result.getInt("StartDate");
-			endYear = result.getInt("EndDate");
+			year = result.getInt("StudyYear");
+			maxYear = result.getInt("MaxYear");
+			minYear = result.getInt("MinYear");
 			faculty =result.getString("Faculty");
 			course = result.getString("Course");
 			department = result.getString("Department");
 			type = result.getString("PType");
 		
-			list.add(new Criteria(roomName, firstNames, surname, startYear, endYear, faculty,
+			list.add(new Criteria(roomName, firstNames, surname, year, maxYear, minYear, faculty,
 				course, department, type));
 		}
 		return list;

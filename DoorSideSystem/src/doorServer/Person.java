@@ -1,5 +1,6 @@
 package doorServer;
 
+import java.util.Calendar;
 
 public class Person {
 
@@ -39,10 +40,15 @@ public class Person {
 		if(c.getSurname()!=null&&!surname.equals(c.getSurname())){
 			return false;
 		}
-		if(c.getStartYear()>=1950){
+		Calendar now = Calendar.getInstance();
+		int currentYear = now.get(Calendar.YEAR)-startYear;
+		if (now.get(Calendar.MONTH)>7){
+			currentYear++;
+		}
+		if(c.getYear()>0&&c.getYear()!=currentYear){
 			return false;
 		}
-		if(c.getEndYear()>=1950){
+		if((c.getMaxYear()>0&&currentYear>c.getMaxYear())||currentYear<c.getMinYear()){
 			return false;
 		}
 		if(c.getFaculty()!=null&&!faculty.equals(c.getFaculty())&&(faculty2==null||!faculty2.equals(c.getFaculty()))){

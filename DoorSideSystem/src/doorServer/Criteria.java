@@ -4,20 +4,22 @@ public class Criteria {
 	private String room;
 	private String firstNames;
 	private String surname;
-	private int startYear;
-	private int endYear;
+	private int year;
+	private int maxYear;
+	private int minYear;
 	private String faculty;
 	private String course;
 	private String department;
 	private String type;
 	
-	public Criteria(String room, String firstNames, String surname, int startYear, int endYear,
+	public Criteria(String room, String firstNames, String surname, int year, int maxYear, int minYear,
 			String faculty, String course, String department, String type){
 		this.room = room;
 		this.firstNames=firstNames;
 		this.surname=surname;
-		this.startYear=startYear;
-		this.endYear=endYear;
+		this.year=year;
+		this.maxYear=maxYear;
+		this.minYear=minYear;
 		this.faculty=faculty;
 		this.course = course;
 		this.department = department;
@@ -48,20 +50,28 @@ public class Criteria {
 		this.surname = surname;
 	}
 
-	public int getStartYear() {
-		return startYear;
+	public int getYear() {
+		return year;
 	}
 
-	public void setStartYear(int startYear) {
-		this.startYear = startYear;
+	public void setYear(int year) {
+		this.year = year;
 	}
 
-	public int getEndYear() {
-		return endYear;
+	public int getMaxYear() {
+		return maxYear;
 	}
 
-	public void setEndYear(int endYear) {
-		this.endYear = endYear;
+	public void setMaxYear(int maxYear) {
+		this.maxYear = maxYear;
+	}
+
+	public int getMinYear() {
+		return minYear;
+	}
+
+	public void setMinYear(int minYear) {
+		this.minYear = minYear;
 	}
 
 	public String getFaculty() {
@@ -95,4 +105,6 @@ public class Criteria {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	
 }

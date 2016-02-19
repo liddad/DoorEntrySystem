@@ -17,8 +17,8 @@ public class RequestSender {
 			
 			ObjectOutputStream out = new ObjectOutputStream(sock.getOutputStream());
 			DoorRequest dr = new DoorRequest();
-			dr.doorCode = "R543";
-			dr.userCode = 1111111111;
+			dr.doorCode = "LT1101";
+			dr.userCode = 2;
 			out.writeObject(dr);
 			ObjectInputStream in = new ObjectInputStream(sock.getInputStream());
 			
