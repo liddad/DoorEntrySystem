@@ -69,4 +69,8 @@ public class Person {
 		return true;
 	}
 	
+	public int getUUID(){
+		return UUID;
+	}
+	
 }
