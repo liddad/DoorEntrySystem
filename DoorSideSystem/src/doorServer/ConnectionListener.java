@@ -12,6 +12,7 @@ public class ConnectionListener {
 			Socket s;
 			while(true){
 				s = sock.accept();
+				System.out.println("Connected");
 				Thread t = new Thread(new RequestListener(s));
 				t.start();
 			}

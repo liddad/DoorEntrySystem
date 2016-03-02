@@ -1,9 +1,13 @@
 package doorServer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
@@ -11,23 +15,23 @@ import java.util.List;
 public class RequestListener implements Runnable {
 
 	private InputStream is;
-	private ObjectOutputStream oos;
+	private OutputStream os;
 	private SQLParser sql;
 	private Socket sock;
 	
 	public RequestListener(Socket s) {
 		InputStream is = null;
-		ObjectOutputStream oos = null;
+		OutputStream os = null;
 		try {
 			is = s.getInputStream();
-			oos = new ObjectOutputStream(s.getOutputStream());
+			os = s.getOutputStream();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		sock = s;
 		this.is = is;
-		this.oos = oos;
+		this.os = os;
 		sql = new SQLParser();
 	}
 
@@ -35,8 +39,11 @@ public class RequestListener implements Runnable {
 	public void run() {
 		try {
 			Boolean accept = false;
-			ObjectInputStream ois = new ObjectInputStream(is);
-			DoorRequest r = (DoorRequest)ois.readObject();
+			BufferedReader in = new BufferedReader(new InputStreamReader(is));
+			String s = in.readLine();
+			System.out.println(s);
+			DoorRequest r = new DoorRequest(s);
+			PrintWriter out = new PrintWriter(os, true);
 			Person person = sql.getPerson(r.userCode);
 			List<Criteria> criteria = sql.getCriteria(r.doorCode);
 			
@@ -49,12 +56,21 @@ public class RequestListener implements Runnable {
 					break;
 				}
 			}
-			oos.writeObject(accept);
+			
+			out.println(accept.toString());
+			System.out.println("Ending connection...");
 			sock.close();
 			
-		} catch (ClassNotFoundException | IOException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e){
+			PrintWriter out = new PrintWriter(os, true);
+			out.println("false");
+			System.out.println("Closing...");
+			try {
+				sock.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 

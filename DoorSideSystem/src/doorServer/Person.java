@@ -45,7 +45,7 @@ public class Person {
 		if (now.get(Calendar.MONTH)>7){
 			currentYear++;
 		}
-		if(now.get(Calendar.YEAR)>endYear||now.get(Calendar.YEAR)==endYear&&now.get(Calendar.YEAR)>7){
+		if(now.get(Calendar.YEAR)>endYear||now.get(Calendar.YEAR)==endYear&&now.get(Calendar.MONTH)>7){
 			return false;
 		}
 		if(c.getYear()>0&&c.getYear()!=currentYear){
