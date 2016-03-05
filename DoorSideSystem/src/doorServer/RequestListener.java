@@ -18,7 +18,7 @@ public class RequestListener implements Runnable {
 	private OutputStream os;
 	private SQLParser sql;
 	private Socket sock;
-	
+
 	public RequestListener(Socket s) {
 		InputStream is = null;
 		OutputStream os = null;
@@ -38,30 +38,32 @@ public class RequestListener implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Boolean accept = false;
-			BufferedReader in = new BufferedReader(new InputStreamReader(is));
-			String s = in.readLine();
-			System.out.println(s);
-			DoorRequest r = new DoorRequest(s);
-			PrintWriter out = new PrintWriter(os, true);
-			Person person = sql.getPerson(r.userCode);
-			List<Criteria> criteria = sql.getCriteria(r.doorCode);
-			
-			for(Criteria c:criteria){
-				if(person==null){
-					break;
+			while (true) {
+				Boolean accept = false;
+				BufferedReader in = new BufferedReader(new InputStreamReader(is));
+				String s = in.readLine();
+				System.out.println(s);
+				DoorRequest r = new DoorRequest(s);
+				PrintWriter out = new PrintWriter(os, true);
+				Person person = sql.getPerson(r.userCode);
+				List<Criteria> criteria = sql.getCriteria(r.doorCode);
+
+				for (Criteria c : criteria) {
+					if (person == null) {
+						break;
+					}
+					if (person.fitsCriteria(c)) {
+						accept = true;
+						break;
+					}
 				}
-				if(person.fitsCriteria(c)){
-					accept = true;
-					break;
-				}
+
+				out.println(accept.toString());
 			}
-			
-			out.println(accept.toString());
-			System.out.println("Ending connection...");
-			sock.close();
-			
-		} catch (Exception e){
+			// System.out.println("Ending connection...");
+			// sock.close();
+
+		} catch (Exception e) {
 			PrintWriter out = new PrintWriter(os, true);
 			out.println("false");
 			System.out.println("Closing...");
