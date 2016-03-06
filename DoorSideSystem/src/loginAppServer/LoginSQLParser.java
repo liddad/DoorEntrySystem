@@ -42,11 +42,65 @@ public class LoginSQLParser {
 				PersonInfo pi = new PersonInfo();
 				pi.password = result.getString("Password");
 				pi.UUID = result.getInt("UUID");
+				conn.close();
 				return pi;
 			}
+			conn.close();
 			return null;
 		} catch (SQLException e) {
 			return null;
+		}
+	}
+	
+	public boolean addPerson(UserCreator person){
+		String fields = "(FNames, Surname, Faculty, Department, PType, Username, Password";
+		String values = "('" + person.getFirstNames() + "', '" + person.getSurname() + "', '" +
+				person.getFaculty() + "', '" + person.getDepartment() + "', '" +
+				person.getType() + "', '" + person.getUsername() + "', '" + person.getPassword() + "'";
+		
+		if(person.getCourse()!=null){
+			fields += ", Course";
+			values += ", '";
+			values += person.getCourse();
+			values += "'";
+		}
+		if(person.getDepartment2()!=null){
+			fields += ", Department2";
+			values += ", '";
+			values += person.getDepartment2();
+			values += "'";
+		}
+		if(person.getFaculty2()!=null){
+			fields += ", Faculty2";
+			values += ", '";
+			values += person.getFaculty2();
+			values += "'";
+		}
+		if(person.getStartYear()!=0){
+			fields += ", StartYear";
+			values += ", '";
+			values += person.getStartYear();
+			values += "'";
+		}
+		if(person.getEndYear()!=0){
+			fields += ", EndYear";
+			values += ", '";
+			values = values + "" + person.getEndYear();
+			values += "'";
+		}
+		fields += ")";
+		values += ")";
+		System.out.println(values);
+		
+		String statement = "INSERT INTO people " + fields + " VALUES " + values + ";";
+		
+		try {
+			Statement s = conn.createStatement();
+			int result = s.executeUpdate(statement);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

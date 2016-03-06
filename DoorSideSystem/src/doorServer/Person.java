@@ -16,7 +16,6 @@ public class Person {
 	private String department2;
 	private String type;
 	
-	
 	public Person(int UUID, String firstNames, String surname, int startYear, int endYear,
 			String faculty, String faculty2, String course, String department, String department2,
 			String type){

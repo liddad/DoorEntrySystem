@@ -67,9 +67,11 @@ public class SQLParser {
 		department2 = result.getString("Department2");
 		type = result.getString("PType");
 		
+		conn.close();
 		return new Person(UUID, firstNames, surname, startYear, endYear, faculty, faculty2, 
 				course, department, department2, type);
 		}
+		conn.close();
 		return null;
 	}
 	
@@ -104,6 +106,7 @@ public class SQLParser {
 			list.add(new Criteria(roomName, firstNames, surname, year, maxYear, minYear, faculty,
 				course, department, type));
 		}
+		conn.close();
 		return list;
 	}
 	
