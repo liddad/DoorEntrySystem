@@ -96,7 +96,7 @@ public class LoginSQLParser {
 		
 		try {
 			Statement s = conn.createStatement();
-			int result = s.executeUpdate(statement);
+			s.executeUpdate(statement);
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
