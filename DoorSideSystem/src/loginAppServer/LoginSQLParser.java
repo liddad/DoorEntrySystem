@@ -52,7 +52,7 @@ public class LoginSQLParser {
 		}
 	}
 	
-	public boolean addPerson(UserCreator person){
+	public boolean addPerson(User person){
 		String fields = "(FNames, Surname, Faculty, Department, PType, Username, Password";
 		String values = "('" + person.getFirstNames() + "', '" + person.getSurname() + "', '" +
 				person.getFaculty() + "', '" + person.getDepartment() + "', '" +

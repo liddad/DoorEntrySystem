@@ -1,6 +1,6 @@
 package loginAppServer;
 
-public class UserCreator {
+public class User {
 	private String firstNames;
 	private String surname;
 	private int startYear;
@@ -14,7 +14,7 @@ public class UserCreator {
 	private String username;
 	private String password;
 
-	public UserCreator(String firstNames, String surname, int startYear, int endYear, String faculty, String faculty2,
+	public User(String firstNames, String surname, int startYear, int endYear, String faculty, String faculty2,
 			String course, String department, String department2, String type, String username, String password) {
 		this.firstNames = firstNames;
 		this.surname = surname;

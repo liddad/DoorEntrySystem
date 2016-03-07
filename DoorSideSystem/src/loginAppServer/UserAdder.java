@@ -18,7 +18,7 @@ public class UserAdder {
 		
 		String hashpassword = BCrypt.hashpw(PASSWORD, BCrypt.gensalt());
 		
-		UserCreator user = new UserCreator(FIRSTNAME, SURNAME, STARTYEAR, ENDYEAR, FACULTY, FACULTY2,
+		User user = new User(FIRSTNAME, SURNAME, STARTYEAR, ENDYEAR, FACULTY, FACULTY2,
 			COURSE, DEPARTMENT,DEPARTMENT2, TYPE, USERNAME, hashpassword);
 		
 		LoginSQLParser p = new LoginSQLParser();
