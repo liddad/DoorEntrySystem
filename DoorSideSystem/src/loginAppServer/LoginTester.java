@@ -12,6 +12,11 @@ import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * JUnit test class to test the Login Server
+ * @author Adam Liddell
+ *
+ */
 public class LoginTester {
 
 	private PrintWriter output;

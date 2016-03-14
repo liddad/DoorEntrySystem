@@ -8,10 +8,15 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-
+/**
+ * This class handles the logging in of a user
+ * @author Adam Liddell
+ *
+ */
 public class LoginHandler implements Runnable {
 
 	private final String DENIED = "Denied";
+	
 	private Socket socket;
 	private InputStream is;
 	private OutputStream os;
@@ -43,6 +48,7 @@ public class LoginHandler implements Runnable {
 			
 			PersonInfo person = parser.getPersonInfo(username);
 			
+			//The string passed back should be "UID: <UID>"
 			if(person == null){
 				output.println(DENIED);
 			} else if(BCrypt.checkpw(password, person.password)){

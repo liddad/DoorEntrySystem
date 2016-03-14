@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+/**
+ * For reading info for logging in, and adding people to the server
+ * @author Adam Liddell
+ *
+ */
 public class LoginSQLParser {
 
 	private Connection conn;
@@ -32,6 +37,11 @@ public class LoginSQLParser {
 		conn = c;
 	}
 
+	/**
+	 * Retrieves a UID and hashed password from the server
+	 * @param username - the username to find the UID and password
+	 * @return a PersonInfo object representing the UID and password
+	 */
 	public PersonInfo getPersonInfo(String username) {
 		try {
 			String statement = "SELECT Password, UUID FROM people WHERE Username=\"" + username + "\"";
@@ -52,6 +62,11 @@ public class LoginSQLParser {
 		}
 	}
 	
+	/**
+	 * Adds a person to the people table
+	 * @param person - a User object representing the person to be added
+	 * @return true if the person was added successfully
+	 */
 	public boolean addPerson(User person){
 		String fields = "(FNames, Surname, Faculty, Department, PType, Username, Password";
 		String values = "('" + person.getFirstNames() + "', '" + person.getSurname() + "', '" +

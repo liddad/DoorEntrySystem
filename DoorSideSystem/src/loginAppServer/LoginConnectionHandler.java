@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
+/**
+ * Accepts connections to the Login server
+ * @author Adam Liddell
+ *
+ */
 public class LoginConnectionHandler implements Runnable {
 
 	@Override

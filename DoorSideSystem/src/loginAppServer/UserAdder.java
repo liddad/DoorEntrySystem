@@ -1,5 +1,10 @@
 package loginAppServer;
 
+/**
+ * A class used to add new users
+ * @author lidda
+ *
+ */
 public class UserAdder {
 
 	public static void main(String[] args) {

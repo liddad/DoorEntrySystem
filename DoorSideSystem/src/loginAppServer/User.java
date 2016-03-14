@@ -1,5 +1,10 @@
 package loginAppServer;
 
+/**
+ * An object to represent a User for adding to the database
+ * @author Adam Liddell
+ *
+ */
 public class User {
 	private String firstNames;  //notnull
 	private String surname;		//notnull
