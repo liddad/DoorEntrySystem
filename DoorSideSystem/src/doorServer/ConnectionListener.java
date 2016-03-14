@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * @author Adam Liddell
+ *
+ * Listens for and accepts connections from Raspberry Pis and handles them in a separate thread
+ */
 public class ConnectionListener implements Runnable{
 
 	@Override
@@ -14,7 +19,6 @@ public class ConnectionListener implements Runnable{
 			Socket s;
 			while(true){
 				s = sock.accept();
-				System.out.println("Connected");
 				Thread t = new Thread(new RequestListener(s),"RequestListenerThread");
 				t.start();
 			}

@@ -12,6 +12,12 @@ import java.util.Properties;
 
 
 
+/**
+ * A class to connect to the mySQL database, send SELECT queries and INSERT
+ * logs to the doorlog table
+ * @author Adam Liddell
+ *
+ */
 public class SQLParser {
 
 	private Connection conn;
@@ -41,6 +47,13 @@ public class SQLParser {
 		doorLogConn = c2;
 	}
 	
+	
+	/**
+	 * Sends a request to the people table to find a person by their ID
+	 * @param ID - The UID of the user to be found
+	 * @return a Person object representing the found person, null if no person was found
+	 * @throws SQLException if a Database error occurs or there is a closed connection
+	 */
 	public Person getPerson(int ID) throws SQLException{
 		int UUID;
 		String firstNames;
@@ -77,6 +90,12 @@ public class SQLParser {
 		return null;
 	}
 	
+	/**
+	 * Finds the criteria for a certain room and returns a List of the Criteria
+	 * @param room - The room for the criteria to be found for
+	 * @return A List containing a Criteria object for each criteria in the db
+	 * @throws SQLException if a Database error occurs or there is a closed connection
+	 */
 	public List<Criteria> getCriteria(String room) throws SQLException{
 		String roomName;
 		String firstNames;
@@ -111,6 +130,12 @@ public class SQLParser {
 		return list;
 	}
 
+	/**
+	 * Checks if a room exists in the rooms table
+	 * @param s - the room to find
+	 * @return true if the room exists in the rooms table
+	 * @throws SQLException if a Database error occurs or there is a closed connection
+	 */
 	public boolean roomExists(String s)  throws SQLException{
 		String statement = "SELECT * FROM rooms WHERE RoomName=\"" + s + "\"";
 		Statement st = conn.createStatement();
@@ -119,6 +144,13 @@ public class SQLParser {
 		return result.isBeforeFirst();
 	}
 	
+	/**
+	 * Logs the entry in the doorlog
+	 * @param UID - the ID of the person who entered
+	 * @param room - the room name
+	 * @return true if the entry was logged correctly
+	 * @throws SQLException if a Database error occurs or there is a closed connection
+	 */
 	public boolean logEntry(int UID, String room) throws SQLException{
 		String statement = "INSERT INTO doorlog (UUID, RoomNo) VALUES (\"" + UID + "\",\"" + room + "\")";
 		

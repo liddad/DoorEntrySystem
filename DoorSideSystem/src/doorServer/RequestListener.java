@@ -10,6 +10,12 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * This class deals with listening and replying to the thread.
+ * 
+ * @author Adam Liddell
+ *
+ */
 public class RequestListener implements Runnable {
 
 	private InputStream is;
@@ -17,6 +23,10 @@ public class RequestListener implements Runnable {
 	private SQLParser sql;
 	private Socket sock;
 
+	/**
+	 * @param s
+	 *            - The connected socket
+	 */
 	public RequestListener(Socket s) {
 		InputStream is = null;
 		OutputStream os = null;
@@ -40,39 +50,45 @@ public class RequestListener implements Runnable {
 			DoorRequest r;
 			Person person;
 			List<Criteria> criteria;
+			// Set up the reader & writer for server
 			BufferedReader in = new BufferedReader(new InputStreamReader(is));
 			PrintWriter out = new PrintWriter(os, true);
+			/*
+			 * The first string received is the room name, and the pi closes the
+			 * socket itself if false is recieved
+			 */
 			s = in.readLine();
-			System.out.println(s);
-			if(sql.roomExists(s)){
+			if (sql.roomExists(s)) {
 				out.println("true");
 			} else {
 				out.println("false");
 			}
+
+			// Door request loop
 			while (true) {
 				Boolean accept = false;
-				
+
 				s = in.readLine();
 				System.out.println("Code: " + s);
-				try{
-				r = new DoorRequest(s);
-				person = sql.getPerson(r.userCode);
-				criteria = sql.getCriteria(r.doorCode);
+				try {
+					r = new DoorRequest(s);
+					person = sql.getPerson(r.userCode);
+					criteria = sql.getCriteria(r.doorCode);
 
-				for (Criteria c : criteria) {
-					if (person == null) {
-						break;
+					for (Criteria c : criteria) {
+						if (person == null) {
+							break;
+						}
+						if (person.fitsCriteria(c)) {
+							accept = true;
+							System.out.println("Logged: " + sql.logEntry(r.userCode, r.doorCode));
+							break;
+						}
 					}
-					if (person.fitsCriteria(c)) {
-						accept = true;
-						System.out.println("Logged: " + sql.logEntry(r.userCode, r.doorCode));
-						break;
-					}
-				}
 
-				out.println(accept.toString());
-				} catch (Exception e){
-					//For unexpected input here don't close the connection
+					out.println(accept.toString());
+				} catch (Exception e) {
+					// For unexpected input here don't close the connection
 					out.println("false");
 				}
 			}
@@ -80,6 +96,7 @@ public class RequestListener implements Runnable {
 			// sock.close();
 
 		} catch (SQLException | IOException e) {
+			//Either the SQL server connection has been lost or an IO error has occurred
 			PrintWriter out = new PrintWriter(os, true);
 			out.println("false");
 			System.out.println("Closing...");

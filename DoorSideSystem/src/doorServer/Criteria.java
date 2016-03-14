@@ -1,5 +1,10 @@
 package doorServer;
 
+/**
+ * A class to hold the information on a single criteria for a room
+ * @author Adam Liddell
+ *
+ */
 public class Criteria {
 	private String room;
 	private String firstNames;

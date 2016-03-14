@@ -2,6 +2,11 @@ package doorServer;
 
 import loginAppServer.LoginConnectionHandler;
 
+/**
+ * The main class to be run
+ * @author Adam Liddell
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) {

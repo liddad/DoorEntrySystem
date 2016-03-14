@@ -2,6 +2,11 @@ package doorServer;
 
 import java.util.Calendar;
 
+/** 
+ * A class to hold info on a single person read from the db
+ * @author Adam Liddell
+ *
+ */
 public class Person {
 
 	private int UUID;
