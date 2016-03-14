@@ -1,22 +1,20 @@
 package loginAppServer;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
 
 public class LoginConnectionHandler implements Runnable {
 
 	@Override
 	public void run() {
 		try {
-			SSLServerSocketFactory socketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-			SSLServerSocket socket = (SSLServerSocket) socketFactory.createServerSocket(7070);
-			SSLSocket sock;
+			Socket sock;
+			ServerSocket ss = new ServerSocket(7070);
 			while (true) {
-				sock = (SSLSocket) socket.accept();
-				(new Thread(new LoginHandler(sock))).start();
+				sock = ss.accept();
+				(new Thread(new LoginHandler(sock),"LoginHandlerThread")).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

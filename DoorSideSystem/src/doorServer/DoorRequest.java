@@ -19,12 +19,10 @@ public class DoorRequest implements Serializable{
 			throw new Exception();
 		}
 		userCode = scan.nextInt();
-		System.out.println(userCode);
 		if(!scan.next().equals("Room:")){
 			throw new Exception();
 		}
 		doorCode = scan.next();
-		System.out.println(doorCode);
 	}
 		
 }

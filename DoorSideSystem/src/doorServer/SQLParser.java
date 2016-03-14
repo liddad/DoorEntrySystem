@@ -15,6 +15,7 @@ import java.util.Properties;
 public class SQLParser {
 
 	private Connection conn;
+	private Connection doorLogConn;
 	
 	public SQLParser(){
 		try {
@@ -23,6 +24,7 @@ public class SQLParser {
 			e1.printStackTrace();
 		}
 		Connection c = null;
+		Connection c2 = null;
 		String serverName= "localhost";
 		int port = 3306;
 		Properties cp = new Properties();
@@ -30,11 +32,13 @@ public class SQLParser {
 		cp.put("password", "piServer1234");
 		try {
 			c = DriverManager.getConnection("jdbc:mysql://" + serverName + ":" + port + "/doorsystem", cp);
+			c2 = DriverManager.getConnection("jdbc:mysql://" + serverName + ":" + port + "/doorlog", cp);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		conn = c;
+		doorLogConn = c2;
 	}
 	
 	public Person getPerson(int ID) throws SQLException{
@@ -67,11 +71,9 @@ public class SQLParser {
 		department2 = result.getString("Department2");
 		type = result.getString("PType");
 		
-		conn.close();
 		return new Person(UUID, firstNames, surname, startYear, endYear, faculty, faculty2, 
 				course, department, department2, type);
 		}
-		conn.close();
 		return null;
 	}
 	
@@ -106,8 +108,22 @@ public class SQLParser {
 			list.add(new Criteria(roomName, firstNames, surname, year, maxYear, minYear, faculty,
 				course, department, type));
 		}
-		conn.close();
 		return list;
 	}
+
+	public boolean roomExists(String s)  throws SQLException{
+		String statement = "SELECT * FROM rooms WHERE RoomName=\"" + s + "\"";
+		Statement st = conn.createStatement();
+		ResultSet result = st.executeQuery(statement);
+		
+		return result.isBeforeFirst();
+	}
 	
+	public boolean logEntry(int UID, String room) throws SQLException{
+		String statement = "INSERT INTO doorlog (UUID, RoomNo) VALUES (\"" + UID + "\",\"" + room + "\")";
+		
+		Statement s = doorLogConn.createStatement();
+		int i = s.executeUpdate(statement);
+		return (i>0);
+	}
 }

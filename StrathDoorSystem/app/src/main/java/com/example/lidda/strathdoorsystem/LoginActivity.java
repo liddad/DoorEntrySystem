@@ -3,6 +3,7 @@ package com.example.lidda.strathdoorsystem;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +19,16 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 /**
  * A login screen that offers login via email/password.
@@ -24,16 +36,11 @@ import android.widget.TextView;
 public class LoginActivity extends AppCompatActivity {
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "abc12345", "password1"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private static final String TAG = "LoginActivity";
+    private boolean exit = false;
 
     // UI references.
     private EditText mUsernameView;
@@ -60,8 +67,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button logInButton = (Button) findViewById(R.id.email_sign_in_button);
+        logInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -70,8 +77,34 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        String s = FileSaver.loadLogin(getApplicationContext());
+        if(s!=null){
+            login(s);
+        }
     }
 
+    public void login(String UIDString){
+        Intent intent = new Intent(getBaseContext(), NFCActivity.class);
+        intent.putExtra("EXTRA_UID", UIDString);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mAuthTask==null||!mAuthTask.cancel(true)){
+            exit = true;
+            finish();
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+        if(exit) {
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+        super.onDestroy();
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -177,6 +210,8 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mUsername;
         private final String mPassword;
+        private String uidString;
+        private boolean timeout;
 
         UserLoginTask(String username, String password) {
             mUsername = username;
@@ -184,26 +219,35 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+        protected Boolean doInBackground(Void... params){
+            BufferedReader input;
+            PrintWriter output;
+            String reply;
+            timeout = false;
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                Socket socket = new Socket();
+                socket.connect(new InetSocketAddress("192.168.1.94", 7070),15000);
+                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                output = new PrintWriter(socket.getOutputStream(), true);
+                output.println(mUsername);
+                output.println(mPassword);
+                reply = input.readLine();
+                Log.d(TAG, reply);
+            } catch (UnknownHostException e) {
+                Log.d(TAG, "UnknownHostException");
+                return false;
+            } catch (SocketTimeoutException e) {
+                timeout=true;
+                return false;
+            } catch (IOException e){
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mUsername)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
+            Log.d(TAG, reply);
+            if(reply.contains("UID: ")){
+                uidString=reply;
+                return true;
             }
-
-            // TODO: register the new account here.
-            return true;
+            return false;
         }
 
         @Override
@@ -212,10 +256,16 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success) {
-                finish();
+                login(uidString);
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if(timeout){
+                    Toast t = Toast.makeText(getApplicationContext(), getString(R.string.error_connection), Toast.LENGTH_LONG);
+                    t.show();
+                } else {
+                    mUsernameView.setError(getString(R.string.error_denied));
+                }
+                mUsernameView.requestFocus();
+                mPasswordView.getText().clear();
             }
         }
 

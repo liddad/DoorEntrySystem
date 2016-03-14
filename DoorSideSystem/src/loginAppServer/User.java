@@ -1,18 +1,18 @@
 package loginAppServer;
 
 public class User {
-	private String firstNames;
-	private String surname;
+	private String firstNames;  //notnull
+	private String surname;		//notnull
 	private int startYear;
 	private int endYear;
-	private String faculty;
+	private String faculty;		//notnull
 	private String faculty2;
 	private String course;
-	private String department;
+	private String department;	//notnull
 	private String department2;
-	private String type;
-	private String username;
-	private String password;
+	private String type;		//notnull
+	private String username;	//notnull
+	private String password;	//notnull
 
 	public User(String firstNames, String surname, int startYear, int endYear, String faculty, String faculty2,
 			String course, String department, String department2, String type, String username, String password) {

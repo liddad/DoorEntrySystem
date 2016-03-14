@@ -34,7 +34,7 @@ public class LoginSQLParser {
 
 	public PersonInfo getPersonInfo(String username) {
 		try {
-			String statement = "SELECT * FROM people WHERE Username=" + username;
+			String statement = "SELECT Password, UUID FROM people WHERE Username=\"" + username + "\"";
 			Statement s = conn.createStatement();
 			ResultSet result = s.executeQuery(statement);
 

@@ -38,15 +38,28 @@ public class RequestListener implements Runnable {
 	@Override
 	public void run() {
 		try {
+			String s;
+			DoorRequest r;
+			Person person;
+			List<Criteria> criteria;
+			BufferedReader in = new BufferedReader(new InputStreamReader(is));
+			PrintWriter out = new PrintWriter(os, true);
+			s = in.readLine();
+			System.out.println(s);
+			if(sql.roomExists(s)){
+				out.println("true");
+			} else {
+				out.println("false");
+			}
 			while (true) {
 				Boolean accept = false;
-				BufferedReader in = new BufferedReader(new InputStreamReader(is));
-				String s = in.readLine();
-				System.out.println(s);
-				DoorRequest r = new DoorRequest(s);
-				PrintWriter out = new PrintWriter(os, true);
-				Person person = sql.getPerson(r.userCode);
-				List<Criteria> criteria = sql.getCriteria(r.doorCode);
+				
+				s = in.readLine();
+				System.out.println("Code: " + s);
+				try{
+				r = new DoorRequest(s);
+				person = sql.getPerson(r.userCode);
+				criteria = sql.getCriteria(r.doorCode);
 
 				for (Criteria c : criteria) {
 					if (person == null) {
@@ -54,24 +67,27 @@ public class RequestListener implements Runnable {
 					}
 					if (person.fitsCriteria(c)) {
 						accept = true;
+						System.out.println("Logged: " + sql.logEntry(r.userCode, r.doorCode));
 						break;
 					}
 				}
 
 				out.println(accept.toString());
+				} catch (Exception e){
+					//For unexpected input here don't close the connection
+					out.println("false");
+				}
 			}
 			// System.out.println("Ending connection...");
 			// sock.close();
 
-		} catch (Exception e) {
+		} catch (SQLException | IOException e) {
 			PrintWriter out = new PrintWriter(os, true);
 			out.println("false");
 			System.out.println("Closing...");
 			try {
 				sock.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			}
 		}
 	}
