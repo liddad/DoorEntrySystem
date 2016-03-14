@@ -16,13 +16,16 @@ public class DoorRequest implements Serializable{
 		Scanner scan = new Scanner(s);
 		//First section should be "UID:"
 		if(!scan.next().equals("UID:")){
+			scan.close();
 			throw new Exception();
 		}
 		userCode = scan.nextInt();
 		if(!scan.next().equals("Room:")){
+			scan.close();
 			throw new Exception();
 		}
 		doorCode = scan.next();
+		scan.close();
 	}
 		
 }

@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import loginAppServer.LoginConnectionHandler;
+public class ConnectionListener implements Runnable{
 
-public class ConnectionListener {
-	
-	public static void main(String args[]) {
-		(new Thread(new LoginConnectionHandler(), "LoginConnectionThread")).start();
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
 		try {
 			ServerSocket sock = new ServerSocket(6100);
 			Socket s;
@@ -22,8 +21,6 @@ public class ConnectionListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 
 }
