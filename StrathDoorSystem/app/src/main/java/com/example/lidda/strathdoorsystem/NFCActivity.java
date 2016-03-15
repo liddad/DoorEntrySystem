@@ -35,6 +35,7 @@ public class NFCActivity extends AppCompatActivity {
         setContentView(R.layout.activity_nfc);
         backPressedOnce = false;
         exiting = false;
+        //Get the value of uidString from the login
         Bundle b = getIntent().getExtras();
         if(!b.isEmpty()){
             uidString = b.getString("EXTRA_UID");
@@ -57,10 +58,13 @@ public class NFCActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+        //If back has been pressed in the last second, exit the app
         if (backPressedOnce){
             exiting = true;
             finish();
         }
+        //If not, set the varable and run a handler in a second to set it back
+        //to false
         backPressedOnce = true;
         Toast.makeText(this, "Double click BACK to exit", Toast.LENGTH_SHORT).show();
 
@@ -68,7 +72,7 @@ public class NFCActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                backPressedOnce=false;
+                backPressedOnce = false;
             }
         }, 1000);
     }
@@ -76,10 +80,14 @@ public class NFCActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy(){
+        //If the method is called by exiting and not by logging out
         if(exiting){
+            //Reads the currently saved uidString
             String s =FileSaver.loadLogin(getApplicationContext());
+            //If there's none, save this one
             if(s==null){
                 FileSaver.saveLogin(getApplicationContext(), uidString);
+            //If it's not the current user, delete it and save this one
             } else if(!s.equals(uidString)){
                 //Something has gone wrong - just keep the current user logged in
                 FileSaver.delete(getApplicationContext());
@@ -90,6 +98,11 @@ public class NFCActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
+    /**
+     * Called by pressing the Log out button - Logs the user out
+     * @param view a view object of the log out button
+     */
     public void backToLogin(View view){
         FileSaver.delete(getApplicationContext());
         uidString = null;
@@ -110,6 +123,12 @@ public class NFCActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Method used to create an NdefRecord containing a string
+     * @param text the string to be added to the NdefRecord
+     * @return the created NdefRecord obkect
+     * @throws UnsupportedEncodingException If the phone doesn't support US-ASCII encoding
+     */
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
 
         //create the message in according with the standard
@@ -130,8 +149,9 @@ public class NFCActivity extends AppCompatActivity {
     }
 
     /**
-     * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
-     * @param adapter The {@link NfcAdapter} used for the foreground dispatch.
+     * Sets up foreground dispatch for NFC intents for the Activity
+     * @param activity The corresponding Activity requesting the foreground dispatch.
+     * @param adapter The NfcAdapter used for the foreground dispatch.
      */
     public void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
         final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
@@ -155,24 +175,39 @@ public class NFCActivity extends AppCompatActivity {
         adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
     }
 
+    /**
+     * Stops foreground dispatch of NFC intents
+     * @param activity The Activity requesting the foreground dispatch.
+     * @param adapter The NfcAdapter used for the foreground dispatch.
+     */
     public void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
         adapter.disableForegroundDispatch(activity);
     }
 
+    /**
+     * Reads a tag and writes to it if the tag is valid
+     * @param intent the NFC intent triggered by the android system
+     * @return true if the tag was written successfully
+     */
     private boolean getTagInfo(Intent intent) {
         //Get the tag
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         String[] techList = tag.getTechList();
         for (int i = 0; i < techList.length; i++) {
+            //The care emulation registers as an Ndef tag
             if (techList[i].equals(Ndef.class.getName())) {
                 Ndef ndefTag = Ndef.get(tag);
+                //Check if it's a type 2 tag
                 if(ndefTag.getType().equals(Ndef.NFC_FORUM_TYPE_2)) {
+                    //Read the message from the tag
                     Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
                     NdefRecord relayRecord = ((NdefMessage) rawMsgs[0]).getRecords()[0];
                     String nfcData = new String(relayRecord.getPayload());
+                    //If the read data is as expected
                     if (nfcData.contains("Room: ")) {
                         Ndef ndef = null;
                         try {
+                            //Write to the tag
                             NdefRecord[] writeRecord = {createRecord(uidString)};
                             NdefMessage message = new NdefMessage(writeRecord);
                             ndef = Ndef.get(tag);

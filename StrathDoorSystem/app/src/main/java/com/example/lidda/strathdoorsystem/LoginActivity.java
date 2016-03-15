@@ -83,6 +83,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Opens the NFCActivity for a valid login
+     * @param UIDString - the UIDString to be send to the NFC tags
+     */
     public void login(String UIDString){
         Intent intent = new Intent(getBaseContext(), NFCActivity.class);
         intent.putExtra("EXTRA_UID", UIDString);
@@ -90,6 +94,9 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Cancels a log in or exits the app if there is none
+     */
     @Override
     public void onBackPressed() {
         if(mAuthTask==null||!mAuthTask.cancel(true)){
@@ -98,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //Kills the process if the Activity is being destroyed by exiting
     @Override
     public void onDestroy(){
         if(exit) {

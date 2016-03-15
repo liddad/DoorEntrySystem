@@ -2,7 +2,7 @@ package loginAppServer;
 
 /**
  * A class used to add new users
- * @author lidda
+ * @author Adam Liddell
  *
  */
 public class UserAdder {
