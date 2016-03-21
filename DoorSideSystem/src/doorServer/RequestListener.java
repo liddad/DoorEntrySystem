@@ -68,8 +68,10 @@ public class RequestListener implements Runnable {
 			while (true) {
 				Boolean accept = false;
 
-				s = in.readLine();
-				System.out.println("Code: " + s);
+				
+				while((s = in.readLine())==null);
+				System.out.println("Code: " + s); 
+				
 				try {
 					r = new DoorRequest(s);
 					person = sql.getPerson(r.userCode);
