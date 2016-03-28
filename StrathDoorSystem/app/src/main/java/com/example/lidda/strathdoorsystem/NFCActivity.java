@@ -115,6 +115,7 @@ public class NFCActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent){
         Toast toast;
         if(!intentInLastSec) {
+            intentInLastSec = true;
             if (tagRW(intent)) {
                 toast = Toast.makeText(getApplicationContext(), "Successfuly Sent!", Toast.LENGTH_SHORT);
             } else {
@@ -122,7 +123,6 @@ public class NFCActivity extends AppCompatActivity {
             }
             toast.show();
         } else{
-            intentInLastSec = true;
 
             new Handler().postDelayed(new Runnable() {
 
