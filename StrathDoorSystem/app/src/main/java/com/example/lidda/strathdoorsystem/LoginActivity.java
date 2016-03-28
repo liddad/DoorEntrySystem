@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
      * Opens the NFCActivity for a valid login
      * @param UIDString - the UIDString to be send to the NFC tags
      */
-    public void login(String UIDString){
+    private void login(String UIDString){
         Intent intent = new Intent(getBaseContext(), NFCActivity.class);
         intent.putExtra("EXTRA_UID", UIDString);
         startActivity(intent);
@@ -171,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 7;
+        return password.length() >4;
     }
 
     /**

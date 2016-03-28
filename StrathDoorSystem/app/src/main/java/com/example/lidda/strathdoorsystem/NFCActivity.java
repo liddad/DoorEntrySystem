@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,7 +25,7 @@ public class NFCActivity extends AppCompatActivity {
     private static final String TAG = "NFCActivity";
     private String uidString;
     private NfcAdapter mAdapter;
-    private boolean backPressedOnce, exiting;
+    private boolean backPressedOnce, exiting, intentInLastSec;
 
 
     @Override
@@ -35,6 +34,7 @@ public class NFCActivity extends AppCompatActivity {
         setContentView(R.layout.activity_nfc);
         backPressedOnce = false;
         exiting = false;
+        intentInLastSec = false;
         //Get the value of uidString from the login
         Bundle b = getIntent().getExtras();
         if(!b.isEmpty()){
@@ -114,12 +114,24 @@ public class NFCActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent){
         Toast toast;
-        if(getTagInfo(intent)){
-            toast = Toast.makeText(getApplicationContext(),"Successfuly Sent!", Toast.LENGTH_SHORT);
-        } else {
-            toast = Toast.makeText(getApplicationContext(),"Failed to send. Try again.", Toast.LENGTH_SHORT);
+        if(!intentInLastSec) {
+            if (tagRW(intent)) {
+                toast = Toast.makeText(getApplicationContext(), "Successfuly Sent!", Toast.LENGTH_SHORT);
+            } else {
+                toast = Toast.makeText(getApplicationContext(), "Failed to send. Try again.", Toast.LENGTH_SHORT);
+            }
+            toast.show();
+        } else{
+            intentInLastSec = true;
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    intentInLastSec = false;
+                }
+            }, 1000);
         }
-        toast.show();
 
     }
 
@@ -162,7 +174,6 @@ public class NFCActivity extends AppCompatActivity {
         IntentFilter[] filters = new IntentFilter[1];
         String[][] techList = new String[][]{};
 
-        // Notice that this is the same filter as in our manifest.
         filters[0] = new IntentFilter();
         filters[0].addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
         filters[0].addCategory(Intent.CATEGORY_DEFAULT);
@@ -189,12 +200,12 @@ public class NFCActivity extends AppCompatActivity {
      * @param intent the NFC intent triggered by the android system
      * @return true if the tag was written successfully
      */
-    private boolean getTagInfo(Intent intent) {
+    private boolean tagRW(Intent intent) {
         //Get the tag
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         String[] techList = tag.getTechList();
         for (int i = 0; i < techList.length; i++) {
-            //The care emulation registers as an Ndef tag
+            //The card emulation registers as an Ndef tag
             if (techList[i].equals(Ndef.class.getName())) {
                 Ndef ndefTag = Ndef.get(tag);
                 //Check if it's a type 2 tag

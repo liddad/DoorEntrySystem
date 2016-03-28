@@ -8,18 +8,18 @@ package loginAppServer;
 public class UserAdder {
 
 	public static void main(String[] args) {
-		String FIRSTNAME = "John";		//notnull
-		String SURNAME = "Smith";		//notnull
-		int STARTYEAR = 2011;
-		int ENDYEAR = 2016;
+		String FIRSTNAME = "Blaise";		//notnull
+		String SURNAME = "Pascal";		//notnull
+		int STARTYEAR = 2013;
+		int ENDYEAR = 2017;
 		String FACULTY = "Science";		//notnull
 		String FACULTY2 = null;
-		String COURSE = "CIS";
-		String DEPARTMENT = "CIS";		//notnull
-		String DEPARTMENT2 = null;
+		String COURSE = "Mathematics & Physics";
+		String DEPARTMENT = "Mathematics";		//notnull
+		String DEPARTMENT2 = "Physics";
 		String TYPE = "Student";		//notnull
-		String USERNAME = "bbb22222";	//notnull
-		String PASSWORD = "password123";//notnull
+		String USERNAME = "ggg77777";	//notnull
+		String PASSWORD = "Triangles";//notnull
 		
 		String hashpassword = BCrypt.hashpw(PASSWORD, BCrypt.gensalt());
 		

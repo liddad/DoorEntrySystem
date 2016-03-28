@@ -38,6 +38,7 @@ public class Person {
 	}
 	
 	public boolean fitsCriteria(Criteria c){
+		
 		if(c.getFirstNames()!=null&&!firstNames.equals(c.getFirstNames())){
 			return false;
 		}
@@ -49,27 +50,41 @@ public class Person {
 		if (now.get(Calendar.MONTH)>7){
 			currentYear++;
 		}
-		if(now.get(Calendar.YEAR)>endYear||now.get(Calendar.YEAR)==endYear&&now.get(Calendar.MONTH)>7){
+		if(endYear>0&&(currentYear>(endYear-startYear))){
 			return false;
 		}
+		System.out.println("Here");
 		if(c.getYear()>0&&c.getYear()!=currentYear){
+			
 			return false;
 		}
-		if((c.getMaxYear()>0&&currentYear>c.getMaxYear())||currentYear<c.getMinYear()){
+
+		System.out.println("Here");
+		if((c.getMaxYear()>0&&currentYear>c.getMaxYear())||(c.getMinYear()>0&&currentYear<c.getMinYear())){
 			return false;
 		}
-		if(c.getFaculty()!=null&&!faculty.equals(c.getFaculty())&&(faculty2==null||!faculty2.equals(c.getFaculty()))){
+
+		System.out.println("Here");
+		if(c.getFaculty()!=null&&(!faculty.equals(c.getFaculty())&&!faculty2.equals(c.getFaculty()))){
 			return false;
 		}
+
+		System.out.println("Here");
 		if(c.getCourse()!=null&&!course.equals(c.getCourse())){
 			return false;
 		}
-		if(c.getDepartment()!=null&&!department.equals(c.getDepartment())&&(department2==null||!department2.equals(c.getDepartment()))){
+
+		System.out.println("Here");
+		if(c.getDepartment()!=null&&(!department.equals(c.getDepartment())&&!department2.equals(c.getDepartment()))){
 			return false;
 		}
+
+		System.out.println("Here");
 		if(c.getType()!=null&&!type.equals(c.getType())){
 			return false;
 		}
+
+		System.out.println("Here");
 		return true;
 	}
 	
