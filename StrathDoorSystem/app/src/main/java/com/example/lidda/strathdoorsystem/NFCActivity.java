@@ -14,7 +14,12 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -124,9 +129,9 @@ public class NFCActivity extends AppCompatActivity {
                 }
             }, 1000);
             if (tagRW(intent)) {
-                toast = Toast.makeText(getApplicationContext(), "Successfuly Sent!", Toast.LENGTH_SHORT);
+                toast = getCustomToast(R.drawable.tick, getString(R.string.nfcsuccess));
             } else {
-                toast = Toast.makeText(getApplicationContext(), "Failed to send. Try again.", Toast.LENGTH_SHORT);
+                toast = getCustomToast(R.drawable.cross, getString(R.string.nfcfail));
             }
             toast.show();
         } else{
@@ -195,6 +200,25 @@ public class NFCActivity extends AppCompatActivity {
         adapter.disableForegroundDispatch(activity);
     }
 
+    /**
+     * Creates a custom toast with information on whether the data sent or not
+     */
+    private Toast getCustomToast(int image, String text){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast,
+                (ViewGroup) findViewById(R.id.toast_layout_root));
+
+        ImageView i = (ImageView) layout.findViewById(R.id.image);
+        i.setImageResource(image);
+        TextView t = (TextView) layout.findViewById(R.id.text);
+        t.setText(text);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        return toast;
+    }
     /**
      * Reads a tag and writes to it if the tag is valid
      * @param intent the NFC intent triggered by the android system

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StrathDoorSystem</string>
+    <string name="app_name">Strathclyde Door Unlocker</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
@@ -13,5 +13,7 @@
     <string name="error_connection">Connection error. Try again.</string>
     <string name="tapNFCText">Please tap phone to reader</string>
     <string name="logOutText">Log Out</string>
-    <string name="exitText">Double click BACK to exit without leaving</string>
+    <string name="exitText">Double click BACK to exit without logging out</string>
+    <string name="nfcsuccess">Success!</string>
+    <string name="nfcfail">Send failed, try again!</string>
 </resources>
