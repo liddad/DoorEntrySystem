@@ -39,7 +39,6 @@
                 android:src="@drawable/nfctap"/>
         </FrameLayout>
 
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,6 +46,15 @@
             android:id="@+id/button"
             android:layout_gravity="center_horizontal"
             android:onClick="backToLogin"/>
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/exitText"
+        android:id="@+id/textView1"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/lightGrey"/>
     </LinearLayout>
 
 </RelativeLayout>

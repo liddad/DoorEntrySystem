@@ -116,14 +116,6 @@ public class NFCActivity extends AppCompatActivity {
         Toast toast;
         if(!intentInLastSec) {
             intentInLastSec = true;
-            if (tagRW(intent)) {
-                toast = Toast.makeText(getApplicationContext(), "Successfuly Sent!", Toast.LENGTH_SHORT);
-            } else {
-                toast = Toast.makeText(getApplicationContext(), "Failed to send. Try again.", Toast.LENGTH_SHORT);
-            }
-            toast.show();
-        } else{
-
             new Handler().postDelayed(new Runnable() {
 
                 @Override
@@ -131,6 +123,14 @@ public class NFCActivity extends AppCompatActivity {
                     intentInLastSec = false;
                 }
             }, 1000);
+            if (tagRW(intent)) {
+                toast = Toast.makeText(getApplicationContext(), "Successfuly Sent!", Toast.LENGTH_SHORT);
+            } else {
+                toast = Toast.makeText(getApplicationContext(), "Failed to send. Try again.", Toast.LENGTH_SHORT);
+            }
+            toast.show();
+        } else{
+            //Do nothing
         }
 
     }

@@ -13,4 +13,5 @@
     <string name="error_connection">Connection error. Try again.</string>
     <string name="tapNFCText">Please tap phone to reader</string>
     <string name="logOutText">Log Out</string>
+    <string name="exitText">Double click BACK to exit without leaving</string>
 </resources>
