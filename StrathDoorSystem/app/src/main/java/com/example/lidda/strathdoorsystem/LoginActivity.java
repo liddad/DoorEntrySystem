@@ -38,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+    private static String IP = "192.168.1.94";
+
     private UserLoginTask mAuthTask = null;
     private static final String TAG = "LoginActivity";
     private boolean exit = false;
@@ -234,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
             timeout = false;
             try {
                 Socket socket = new Socket();
-                socket.connect(new InetSocketAddress("192.168.1.94", 7070),15000);
+                socket.connect(new InetSocketAddress(IP, 7070),15000);
                 input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 output = new PrintWriter(socket.getOutputStream(), true);
                 output.println(mUsername);
