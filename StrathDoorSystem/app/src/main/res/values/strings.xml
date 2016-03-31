@@ -14,6 +14,6 @@
     <string name="tapNFCText">Please tap phone to reader</string>
     <string name="logOutText">Log Out</string>
     <string name="exitText">Double click BACK to exit without logging out</string>
-    <string name="nfcsuccess">Success!</string>
+    <string name="nfcsuccess">Sent Successfully!</string>
     <string name="nfcfail">Send failed, try again!</string>
 </resources>

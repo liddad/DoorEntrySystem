@@ -53,38 +53,31 @@ public class Person {
 		if(endYear>0&&(currentYear>(endYear-startYear))){
 			return false;
 		}
-		System.out.println("Here");
 		if(c.getYear()>0&&c.getYear()!=currentYear){
 			
 			return false;
 		}
 
-		System.out.println("Here");
 		if((c.getMaxYear()>0&&currentYear>c.getMaxYear())||(c.getMinYear()>0&&currentYear<c.getMinYear())){
 			return false;
 		}
 
-		System.out.println("Here");
 		if(c.getFaculty()!=null&&(!faculty.equals(c.getFaculty())&&!faculty2.equals(c.getFaculty()))){
 			return false;
 		}
 
-		System.out.println("Here");
 		if(c.getCourse()!=null&&!course.equals(c.getCourse())){
 			return false;
 		}
 
-		System.out.println("Here");
 		if(c.getDepartment()!=null&&(!department.equals(c.getDepartment())&&!department2.equals(c.getDepartment()))){
 			return false;
 		}
 
-		System.out.println("Here");
 		if(c.getType()!=null&&!type.equals(c.getType())){
 			return false;
 		}
 
-		System.out.println("Here");
 		return true;
 	}
 	
