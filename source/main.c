@@ -120,7 +120,7 @@ int main( int argc, char * argv[] )
     uint8_t    bValue;
     phStatus_t status;
 
-    /* variables for server comms */ 
+    /* variables for Door Controller code */ 
     int sock;
     char server_reply[1000];
     char room[20] = "Room: ";
@@ -230,16 +230,12 @@ int main( int argc, char * argv[] )
 
     /* Initialize the T2T (Type 2-Tag) */
     statusT2T = phCardEmu_T2T_Init();
-//    uint8_t debug_text[] = {'-','t','N','X','P'};
-//    
-//    uint8_t input_size = 6;
-//    updateMsg(input_size, debug_text);
-    updateMsg(argc, argv);
-    
+
     /* Set the communication protocol */
     status = phhalHw_ApplyProtocolSettings(&hal, PHHAL_HW_CARDTYPE_ISO14443A_CE);
     CHECK_STATUS(status);
 
+    //Variable to hold the value written to the tag
     char* ndefMsg;
     wiringPiSetup();
     pinMode(27, OUTPUT);
@@ -247,17 +243,24 @@ int main( int argc, char * argv[] )
     digitalWrite(27, HIGH);
     digitalWrite(28, LOW);
     
+    //Connect to the server
     sock = setupClient(ipAdd);
 
     uint8_t bndefstatus;
+    //Set to 1 when room is valid
     int valid = 0;
 
+    //There should be 3 arguments to run the code correctly
     if(argc!=3){
         puts("Invalid usage. Correct usage:");
 	puts("./explorenfc-cardemulation -t <RoomNumber>");
     } else {  
+	    //Send and receive from the server
 	    strcat(argv[2],"\n");
 	    sendAndRecieve(server_reply,argv[2],sock);
+	    /**If the server replies true, create the argv array to
+             * contain the needed data for resetting the tag value */
+	    
 	    if(strcmp(server_reply,"true\r\n")==0){
 		valid = 1;
 		strcat(room,argv[2]);
@@ -265,6 +268,7 @@ int main( int argc, char * argv[] )
 		memcpy(argv[2],room, sizeof(room));
 		puts(argv[2]);
 		printf("Card Emulation started.\n");
+		//And if not, print a relevant error message
 	    } else if(strcmp(argv[1],"-t")==0){
 		puts("Not a room. Exiting...");
 	    } else {
@@ -273,17 +277,11 @@ int main( int argc, char * argv[] )
 	   }
     }
 
-
-
     while(valid==1)
         {
-   	/* Initialize the T2T (Type 2-Tag) */
-   	//statusT2T = phCardEmu_T2T_Init();
+   	/* Update the value written on the tag (The "-t" is checked here) */
 	updateMsg(argc, argv);
     
- 	/* Set the communication protocol */
-	//status = phhalHw_ApplyProtocolSettings(&hal, PHHAL_HW_CARDTYPE_ISO14443A_CE);
-	//CHECK_STATUS(status);
         /* Card emulation activation is required */
         if(phCardEmu_Activate(&pRxBuffer, &wRxLength) != PH_ERR_SUCCESS)
             {
@@ -294,18 +292,25 @@ int main( int argc, char * argv[] )
             /* T2T proper operations*/
             phCardEmu_T2T_Start(pRxBuffer, wRxLength);
 #ifdef  PHCARDEMU_T2T_MSG
-            /* Processing the NDEF message and writing message to the Facebook */
+            /* Processing the NDEF message and sending message to server */
             if( CheckNdef( t2tMemory, &NdefDesc ) == NDEF_TEXT_WRITE )
             {
 		puts(t2tMemory);
+		//Allocate extra memory to the tag for the new value of the tag
                 ndefMsg = calloc((16+NdefDesc.textlen),sizeof(char));
+
+		//Copy the written text into the ndefMsg pointer
                 memcpy(ndefMsg, NdefDesc.textstart, NdefDesc.textlen);
                 ndefMsg[NdefDesc.textlen] = ' ';
-		//strcat(ndefMsg, room);
+
+		//Concatenate the room string
 		memcpy(ndefMsg+(NdefDesc.textlen+1), room, sizeof(room));
                 printf("Message:  %s\n", ndefMsg);
+
+		//Send to the server
 		sendAndRecieve(server_reply, ndefMsg, sock);
 		puts(server_reply);
+		//If ther server replies true, switch the LEDs for 5000 ms
 		if(strcmp(server_reply, "true\r\n")==0){
 			digitalWrite(27,LOW);
 			digitalWrite(28,HIGH);
@@ -313,6 +318,7 @@ int main( int argc, char * argv[] )
 			digitalWrite(27,HIGH);
 			digitalWrite(28,LOW);
 		}
+		//Clear the values that need to be used next time
 		bzero(ndefMsg, sizeof(ndefMsg));
 		bzero(server_reply, sizeof(server_reply));
             }
