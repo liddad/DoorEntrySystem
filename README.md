@@ -14,7 +14,7 @@ From the MySQL shell, run the command:
 ```
 source <location>/Database/dump.sql
 ```
-Where *<location>* is the full pathname of the git repository on the windows system.
+Where *\<location\>* is the full pathname of the git repository on the windows system.
 
 ##Running the server
 Firstly, the Eclipse IDE for java should be installed on a windows system. In this system and import the project held in the **“DoorSideSystem”** folder.
@@ -45,7 +45,7 @@ The code can now be run with the command:
 ```
 sudo ./explorenfc-cardemulation –t <RoomNo>
 ```
-Where *<RoomNo>* is the room the door controller provides entry to (in all caps)
+Where *\<RoomNo\>* is the room the door controller provides entry to (in all caps)
 
 The door controller should now be now ready and running. If it fails to connect, check the server’s firewall settings.
 
